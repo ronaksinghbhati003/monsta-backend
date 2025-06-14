@@ -1,0 +1,10 @@
+let express=require("express");
+const { faqInsert, faqView, faqDelete, editStatus, editData, updateData } = require("../../controllers/admin/faq");
+let faqRoutes=express.Router();
+faqRoutes.post('/insert',faqInsert);
+faqRoutes.get('/view',faqView);
+faqRoutes.delete('/delete',faqDelete);
+faqRoutes.put('/active',editStatus);
+faqRoutes.get('/editdata/:id',editData);
+faqRoutes.put('/update/:id',updateData);
+module.exports={faqRoutes};

@@ -1,0 +1,10 @@
+let express=require("express");
+const { countryInsert, countryView, countryDelete, countryActive, countryUpdate, countryEditData } = require("../../controllers/admin/country");
+let countryRoute=express.Router();
+ countryRoute.post('/insert',countryInsert);
+ countryRoute.get('/view',countryView);
+countryRoute.post('/delete',countryDelete);
+countryRoute.put('/active',countryActive);
+countryRoute.put('/update',countryUpdate);
+countryRoute.get('/edit-data/:id',countryEditData);
+ module.exports={countryRoute};
