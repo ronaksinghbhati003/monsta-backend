@@ -4,19 +4,24 @@ const { registerModel } = require("../../models/website/registerModel")
 let userView = async (req, res) => {
     try {
         let userSearch = {};
-        let { search } = req.query;
+        let { search,currentPage } = req.query;
+        let limit=10;
+        let skip=(currentPage-1)*limit;
         if (search) {
             userSearch = {
                 $or: [{ userName: new RegExp(search, "i") }, { userEmail: new RegExp(search, "i") }]
             }
         }
-        let viewUser = await registerModel.find(userSearch);
+        let total=await registerModel.find(userSearch);
+        let totalPages=Math.ceil(total.length/limit);
+        let viewUser = await registerModel.find(userSearch).skip(skip).limit(limit);
         res.send({
             status: 1,
             msg: "User Found Succefully",
-            viewUser
+            viewUser,
+            totalPages
         })
-    }
+   }
     catch (error) {
         res.send({
             status: 0,

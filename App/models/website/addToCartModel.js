@@ -4,7 +4,6 @@ const cartSchema=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'register'
     },
-    index:Number,
     color:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'color'

@@ -32,19 +32,24 @@ let sliderInsert=async(req,res)=>{
 let sliderView=async(req,res)=>{
     try{
         let search={};
-        let{find}=req.query;
+        let{find,currentPage}=req.query;
+        let limit=10;
+        let skip=(currentPage-1)*10;
         if(find){
             search={
                 sliderTitle:new RegExp(find,"i")
             }
         }
+        let total=await sliderModel.find(search);
+        let totalPages=Math.ceil(total.length/limit);
         let sliderImagePath=process.env.STATICPATH+'upload/slider/';
-         let viewData=await sliderModel.find(search);
+         let viewData=await sliderModel.find(search).skip(skip).limit(limit);
          res.send({
             status:1,
             sliderImagePath,
             msg:"Data found Succefully",
-            viewData
+            viewData,
+            totalPages
          })
     }
     catch(error){

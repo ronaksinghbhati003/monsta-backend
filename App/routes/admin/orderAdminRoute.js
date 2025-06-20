@@ -1,6 +1,7 @@
 let express =require("express");
-const { viewOrderAtAdmin } = require("../../controllers/admin/orderAdmin");
+const { viewOrderAtAdmin, deleteOrder } = require("../../controllers/admin/orderAdmin");
 let orderAdminRoute=express.Router();
 
 orderAdminRoute.get('/vieworder',viewOrderAtAdmin);
+orderAdminRoute.delete('/deleteorder',deleteOrder)
 module.exports={orderAdminRoute}

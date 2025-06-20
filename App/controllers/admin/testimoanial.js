@@ -33,7 +33,9 @@ let testInsert=async(req , res)=>{
 let testView=async(req,res)=>{
     try{
         let search={};
-        let{name,designation}=req.query;
+        let{name,designation,currentPage}=req.query;
+        let limit=10;
+        let skip=(currentPage-1)*limit;
         let testImagePath=process.env.STATICPATH+"upload/testimoanial/";
         if(name&&designation){
             search={
@@ -50,12 +52,15 @@ let testView=async(req,res)=>{
                 testDesignation:new RegExp(designation,"i")
             }
         }
-       let viewData=await testModel.find(search);
+       let total=await testModel.find({});
+       let totalPages=Math.ceil(total.length/limit);
+       let viewData=await testModel.find(search).skip(skip).limit(limit);
        res.send({
         status:1,
         testImagePath,
         msg:"Data Found Succefully",
-        viewData
+        viewData,
+        totalPages
        })
     }
     catch(error){

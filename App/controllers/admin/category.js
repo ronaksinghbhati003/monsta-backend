@@ -41,19 +41,25 @@ let categortyInsert= async(req,res)=>{
 let categortyView=async(req,res)=>{
     let STATICPATH=process.env.STATICPATH+'upload/category/';
     let search={};
+    let{currentPage}=req.query;
+    let limit=10;
+    let skip=(currentPage-1)*limit;
     if(req.query.search){
         search={
             categoryName:new RegExp(req.query.search,"i")
             //$or:[{categoryName:new RegExp(req.query.search,"i")}]
         }
     }
+    let total=await categortyModel.find(search);
+    let totalPages=Math.ceil(total.length/limit);
 
-    let viewData=await categortyModel.find(search);
+    let viewData=await categortyModel.find(search).skip(skip).limit(limit);
     res.send({
         status:1,
         STATICPATH,
         msg:"Data Found Sucessfully",
-        viewData
+        viewData,
+        totalPages
     })
 }
 

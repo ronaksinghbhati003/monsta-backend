@@ -33,6 +33,8 @@ let whychooseusView=async(req,res)=>{
     try{
         let ViewImagePath=process.env.STATICPATH+'upload/whychooseus/'
         let search={};
+        let limit=10;
+        let skip=(req.query.currentPage-1)*limit;
         if(req.query.search||req.query.description){
             if(req.query.search&&req.query.description)
             {
@@ -52,12 +54,15 @@ let whychooseusView=async(req,res)=>{
             }
            
         }
-       let viewData=await whyChooseUsModel.find(search);
+      let total=await whyChooseUsModel.find(search);
+       let totalPages=Math.ceil(total.length/limit);
+       let viewData=await whyChooseUsModel.find(search).skip(skip).limit(limit);
       res.send({
         status:1,
         ViewImagePath,
         msg:"Data found Succefully",
-        viewData
+        viewData,
+        totalPages
       })
     }
     catch(error){

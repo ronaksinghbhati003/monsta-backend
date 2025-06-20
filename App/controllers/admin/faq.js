@@ -37,7 +37,9 @@ let faqView=async(req,res)=>{
     try{
         let search={};
         let array=[];
-        let{question,answer}=req.query;
+        let{question,answer,currentPage}=req.query;
+        let limit=10;
+        let skip=(currentPage-1)*limit;
         if(question||answer)
         {
             if(question){
@@ -47,12 +49,15 @@ let faqView=async(req,res)=>{
                 array.push({faqAnswer:{$regex:answer,$options:"i"}})
             }
         }
+        let total=await faqModel.find({});
+        let totalPages=Math.ceil(total.length/limit);
         search=array.length>=1?{$or:array}:{};
-        let viewData=await faqModel.find(search);//find all data and return array of find data
+        let viewData=await faqModel.find(search).skip(skip).limit(limit);//find all data and return array of find data
         res.send({
             status:1,
             msg:viewData.length>=1?"Data Found Succesfullly":null,
-            viewData
+            viewData,
+            totalPages
         })
     }
     catch(err){

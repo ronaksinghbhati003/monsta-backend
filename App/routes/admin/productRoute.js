@@ -1,6 +1,6 @@
 let express=require("express");
 let multer=require("multer");
-const { productParentCategory, insertProduct, subCategory, subSubCategory, productMaterial, productColor, productView, productDetail } = require("../../controllers/admin/product");
+const { productParentCategory, insertProduct, subCategory, subSubCategory, productMaterial, productColor, productView, productDetail, productDelete, updateProductStatus, getProductForUpdate, updateProduct } = require("../../controllers/admin/product");
 let productRoute=express.Router();
 
 let productStorage=multer.diskStorage({
@@ -27,5 +27,9 @@ productRoute.get('/material',productMaterial);
 productRoute.get('/color',productColor);
 productRoute.get('/view',productView);
 productRoute.get('/productdetail/:id',productDetail);
+productRoute.delete('/productdelete',productDelete);
+productRoute.put("/productstatus",updateProductStatus);
+productRoute.get("/getproduct",getProductForUpdate);
+productRoute.put('/update/:id',cupload,updateProduct);
 
 module.exports={productRoute}

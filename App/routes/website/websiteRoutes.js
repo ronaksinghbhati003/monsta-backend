@@ -6,6 +6,7 @@ const { webProductRoute } = require("./websiteProductRoute");
 const { cartRoute } = require("./addToCartRoute");
 const { orderRoute } = require("./orderRoute");
 const { billingRoute } = require("./billingRoute");
+const { wishListRoute } = require("./wishListRoute");
 let webSiteRoute=express.Router();
 
 webSiteRoute.use('/user',registerRoute);
@@ -15,4 +16,5 @@ webSiteRoute.use('/home',webProductRoute);
 webSiteRoute.use('/cart',cartRoute);
 webSiteRoute.use('/order',orderRoute);
 webSiteRoute.use('/billing',billingRoute);
+webSiteRoute.use('/wishlist',wishListRoute);
 module.exports={webSiteRoute};

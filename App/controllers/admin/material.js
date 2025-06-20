@@ -4,17 +4,22 @@ let materialView = async (req, res) => {
 
     try {
         let search={};
-        let{searchMaterial}=req.query;
+        let{searchMaterial,currentPage}=req.query;
+        let limit=10;
+        let skip=(currentPage-1)*limit;
         if(searchMaterial){
             search={
                 $or:[{materialName:{$regex:searchMaterial,$options:"i"}}]
             }
         }
+        let total=await materialModel.find(search);
+        let totalPages=Math.ceil(total.length/limit);
         let viewData = await materialModel.find(search);
         res.send({
             status: 1,
             msg: "Data get Succefully",
-            viewData
+            viewData,
+            totalPages
         });
     }
     catch (err) {

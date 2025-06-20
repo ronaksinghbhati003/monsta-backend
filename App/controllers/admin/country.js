@@ -29,16 +29,21 @@ let countryInsert=async(req ,res)=>{
 let countryView=async(req,res)=>{
     try{
         let search={};
+        let limit=10;
+        let skip=(req.query.currentPage-1)*limit;
         if(req.query.search){
             search={
                 countryName:new RegExp(req.query.search,"i")
             }
         }
-    let viewData=await countryModel.find(search);
+    let total=await countryModel.find({});
+    let totalPages=Math.ceil(total.length/limit);
+    let viewData=await countryModel.find(search).skip(skip).limit(limit);
     res.send({
         status:1,
         msg:"Data Found Succefully",
-        viewData
+        viewData,
+        totalPages
     })
     }
     catch(error){

@@ -55,8 +55,8 @@ let subCatInsert=async(req,res)=>{
 } 
 
 let subCatView=async(req,res)=>{
-    try{
-        let{find}=req.query;
+    //try{
+        let{find,currentPage}=req.query;
         let subCatImagePath=process.env.STATICPATH+'upload/subcategory/';
         /*let search={};
         if(find){
@@ -83,6 +83,12 @@ let subCatView=async(req,res)=>{
                     $or:[{subCategoryName:new RegExp(find,"i")},{'category.categoryName':new RegExp(find,"i")}]
                 }
             },
+            {
+              $skip:(currentPage-1)*10,
+            },
+            {
+               $limit:10
+            },
             //Return New Shape Document
             {
                 $project:{
@@ -96,20 +102,52 @@ let subCatView=async(req,res)=>{
                 }
             }
         ]);
+        let total=await subCatModel.aggregate([
+            {
+                $lookup:{
+                    from:'categories',
+                    localField:'parentCategoryId',
+                    foreignField:'_id',
+                    as:'category'
+                },
+            },
+            {
+                $unwind:'$category'
+            },
+            {
+                $match:{
+                    $or:[{subCategoryName:new RegExp(find,"i")},{'category.categoryName':new RegExp(find,"i")}]
+                }
+            },
+            {
+                $project:{
+                    _id:1,
+                    subCategoryName:1,
+                    subCategoryOrder:1,
+                    subCategoryStatus:1,
+                    subCategoryImage:1,
+                    parentCategoryId:1,
+                    "category":1
+                }
+            }
+        ])
+        let totalPages=Math.ceil(total.length/10);
+        console.log(total.length);
          res.send({
             status:1,
             subCatImagePath,
             msg:"Data Found Succefully",
-            viewData
+            viewData,
+            totalPages
          })
-    }
-    catch(error){
+    //}
+    /*catch(error){
         res.send({
             status:0,
             msg:"Something Went Wrong",
             error
         })
-    }
+    }*/
 }
 
 let subCatDelete=async(req,res)=>{
