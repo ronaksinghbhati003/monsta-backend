@@ -2,13 +2,14 @@ const { cartModel } = require("../../models/website/addToCartModel");
 
 let addToCartProduct = async (req, res) => {
   try {
-    //console.log(req.body);
     let { color, product, id } = req.body;
-    let checkAlreadyExist = await cartModel.findOne({ color: color });
+    console.log(product);
+    let checkAlreadyExist = await cartModel.findOne({$and:[{product:product},{color:color}]});
+    console.log(checkAlreadyExist);
     if (checkAlreadyExist) {
       return res.send({
         status: 0,
-        msg: `${checkAlreadyExist.product?.productName} is alredy exist`
+        msg: `${checkAlreadyExist?.product?.productName} is alredy exist`
       });
     }
 

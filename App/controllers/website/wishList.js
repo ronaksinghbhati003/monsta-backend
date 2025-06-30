@@ -4,7 +4,7 @@ let addWishList = async (req, res) => {
     try {
         console.log(req.body);
         let{productImage,productSalePrice,productName,id,_id,productStock,color}=req.body;
-        let check=await wishListModel.findOne({productId:_id});
+        let check=await wishListModel.findOne({$and:[{productId:_id},{productColor:color}]});
         if(check){
              return res.send({
                 status:2,

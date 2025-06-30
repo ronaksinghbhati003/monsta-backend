@@ -3,6 +3,8 @@ const { productModel } = require("../../models/productModel");
 const { sliderModel } = require("../../models/sliderModel");
 const { subCatModel } = require("../../models/subcatergoryModel");
 const { subSubCatModel } = require("../../models/subSubCategoryModel");
+const { testModel } = require("../../models/testimoanialsModel");
+const { whyChooseUsModel } = require("../../models/whychooseusModel");
 
 let webProduct = async (req, res) => {
     try {
@@ -71,7 +73,6 @@ let megaMenu = async (req, res) => {
             
             finalAns.push(obj);
         }
-        console.log(finalAns);
         res.send({
             status: 1,
             finalAns
@@ -126,4 +127,74 @@ let getSliderData=async(req,res)=>{
     }
 }
 
-module.exports = { webProduct, webProductDetail, megaMenu,featuredProduct,getSliderData };
+let topRated=async(req,res)=>{
+     try{
+        let finalAns=[];
+        let selected=new Set();
+        let imagePath=process.env.STATICPATH+"upload/product/"
+        let topRatedData=await productModel.find({productTopRated:true}).populate('subCategory');
+        while(finalAns.length<2&&selected.size<topRatedData.length){
+            let randomIndex=~~(Math.random()*topRatedData.length);
+            if(!selected.has(randomIndex)){
+                selected.add(randomIndex);
+                finalAns.push(topRatedData[randomIndex]);
+            }
+        }
+        
+        res.send({
+            status:1,
+            imagePath,
+            finalAns
+        });
+     }
+     catch(error){
+         res.send({
+            status: 0,
+            msg: "Something Went Wrong",
+            error
+        })
+     }
+}
+
+
+let whyChooseUs=async(req,res)=>{
+    try{
+        let whyChooseUsImage=process.env.STATICPATH+"upload/whychooseus/";
+        let whyChooseUs=await whyChooseUsModel.find({whyChooseUsStatus:true});
+        res.send({
+            status:1,
+            msg:"Data Found",
+            whyChooseUsImage,
+            whyChooseUs
+        })
+    }
+    catch(error){
+       res.send({
+            status: 0,
+            msg: "Something Went Wrong",
+            error
+        }) 
+    }
+}
+
+let testimoanial=async(req,res)=>{
+    try{
+         let testimoanialImage=process.env.STATICPATH+"upload/testimoanial/";
+         let testimoanialData=await testModel.find({testStatus:true});
+          res.send({
+            status:1,
+            msg:"Data Found",
+            testimoanialImage,
+            testimoanialData
+        })
+    }
+    catch(error){
+        res.send({
+            status: 0,
+            msg: "Something Went Wrong",
+            error
+        }) 
+    }
+}
+
+module.exports = { webProduct, webProductDetail, megaMenu,featuredProduct,getSliderData,topRated,whyChooseUs,testimoanial};
